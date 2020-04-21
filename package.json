@@ -5,12 +5,21 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:server": "vue-cli-service build --env.mode=server",
+    "build:client": "vue-cli-service build --env.mode=client",
+    "serve:server": "vue-cli-service serve --env.mode=server",
+    "serve:client": "vue-cli-service serve --env.mode=client",
+    "build:prod": "npm run build:server && move dist\\vue-ssr-server-bundle.json bundle && npm run build:client && move bundle dist\\vue-ssr-server-bundle.json",
+    "serve:dev": "npm run serve:server && move dist\\vue-ssr-server-bundle.json bundle && npm run serve:client && move bundle dist\\vue-ssr-server-bundle.json",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "express": "^4.17.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
+    "vue-server-renderer": "^2.6.11",
     "vuex": "^3.1.3"
   },
   "devDependencies": {
@@ -24,6 +33,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-node-externals": "^1.7.2"
   }
 }
