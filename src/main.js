@@ -3,8 +3,10 @@ import App from './App.vue'
 import {createRouter} from './router';
 import {createStore} from "./store";
 import {sync} from 'vuex-router-sync';
+import './mixin/prefetching';
 
 Vue.config.productionTip = true;
+
 
 export function createApp () {
     const router = createRouter();

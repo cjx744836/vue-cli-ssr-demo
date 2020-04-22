@@ -58,7 +58,13 @@ async function renderHtml(req, res,) {
         clientManifest,
         template: fs.readFileSync(path.join(__dirname, './index.template.html'), 'utf-8')
     });
-    let context = {url: req.url, title: 'vue-cli-ssr-demo'};
+    let context = {
+        url: req.url,
+        title: 'vue-cli-ssr-demo',
+        meta: `
+            <meta name="referrer" content="never">
+        `
+    };
     renderer.renderToString(context, function(err, html) {
         if(err) {
             res.status(500).end('Internal Server Error');

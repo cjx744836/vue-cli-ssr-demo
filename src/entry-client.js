@@ -2,7 +2,7 @@ import { createApp } from './main'
 
 const { app, router, store } = createApp();
 router.onReady(() => {
-    router.beforeResolve((to, from, next) => {
+    /*router.beforeResolve((to, from, next) => {
         const matched = router.getMatchedComponents(to);
         const prevMatched = router.getMatchedComponents(from);
 
@@ -20,7 +20,7 @@ router.onReady(() => {
         })).then(() => {
             next()
         }).catch(next)
-    });
+    });*/
     if(window.__INITIAL_STATE__) {
         store.replaceState(window.__INITIAL_STATE__)
     }

@@ -17,9 +17,9 @@ export default context => {
                     })
                 }
             })).then(() => {
-                context.state = store.state
-                resolve(app)
-            }).catch(reject)
+                context.state = store.state;
+                resolve(app);
+            }).catch(reject);
         }, reject)
     })
 }
