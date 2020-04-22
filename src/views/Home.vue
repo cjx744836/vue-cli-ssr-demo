@@ -1,19 +1,14 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-      <div>all alla llallalal alalal allaal</div>
+      <div>vue-cli-ssr-demo</div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import titleMixin from '@/mixin/title';
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
+  name: 'Tome',
+    mixins: [titleMixin]
 }
 </script>
