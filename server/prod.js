@@ -20,7 +20,7 @@ const microCache = new LRU({
     max: 100,
     maxAge: 60 * 60 * 1000 //1 hours cache
 });
-let cacheUrl = [];
+let cacheUrl = ['/girls'];
 const isCacheable = url => {
     return cacheUrl.indexOf(url) > -1;
 };
@@ -35,10 +35,8 @@ function helper(v) {
 function renderHTML(req, res) {
     let context = {
         url: req.url,
-        title: 'vue-cli-ssr-demo',
-        meta: ''
     };
-    const cacheable = isCacheable(req)
+    const cacheable = isCacheable(req.url);
     if (cacheable) {
         const hit = microCache.get(req.url);
         if (hit) {
