@@ -16,9 +16,15 @@
 
  <script>
      import HelloWorld from '@/components/HelloWorld';
-     import titleMixin from '@/mixin/title';
      export default {
-         mixins: [titleMixin],
+         metaInfo: {
+             title: 'girls',
+             meta: [
+                 {name: 'referrer', content: 'never'},
+                 {name: 'keywords', content: "girls"},
+                 {name: 'description', content: "girls desc"}
+             ]
+         },
          data() {
              return {
                  loading: true,

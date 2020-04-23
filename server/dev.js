@@ -41,14 +41,19 @@ complier.watch({}, (err, states) => {
 
 function setUpServer() {
     isRunning = true;
-    server.get('/', function(req, res) {
-        renderHtml(req, res);
-    });
     server.get('*', function(req, res) {
         renderHtml(req, res);
     });
     server.listen(port, () => console.log('Server is running at:http://localhost:' + port));
 }
+
+function helper(v) {
+    if(typeof v === 'function') {
+        return v();
+    }
+    return '';
+}
+
 
 async function renderHtml(req, res,) {
     let data = await axios.get('http://localhost:8080/vue-ssr-client-manifest.json');
@@ -56,20 +61,35 @@ async function renderHtml(req, res,) {
     let renderer = createBundleRenderer(bundle, {
         runInNewContext: false,
         clientManifest,
-        template: fs.readFileSync(path.join(__dirname, './index.template.html'), 'utf-8')
     });
     let context = {
         url: req.url,
-        title: 'vue-cli-ssr-demo',
-        meta: `
-            <meta name="referrer" content="never">
-        `
     };
     renderer.renderToString(context, function(err, html) {
-        if(err) {
-            res.status(500).end('Internal Server Error');
-        } else {
-            res.end(html);
-        }
+        if(err) return res.end(err.stack);
+        const {title, htmlAttrs, bodyAttrs, link, style, script, noscript, meta} = context.meta.inject();
+        let temp = `
+          <!doctype html>
+            <html ${helper(htmlAttrs.text)}>
+            <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                ${helper(meta.text)}
+                ${helper(title.text)}  
+                ${context.renderStyles()}
+                ${context.renderResourceHints()}
+                ${helper(link.text)}
+                ${helper(style.text)}
+                ${helper(script.text)}
+                ${helper(noscript.text)}
+            </head>
+            <body ${helper(bodyAttrs.text)}>
+                ${html}
+                ${context.renderState()}
+                ${context.renderScripts()}
+            </body>
+          </html>`;
+        res.end(temp);
     });
 }

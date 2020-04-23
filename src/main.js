@@ -4,7 +4,11 @@ import {createRouter} from './router';
 import {createStore} from "./store";
 import {sync} from 'vuex-router-sync';
 import './mixin/prefetching';
+import VueMeta from "vue-meta";
 
+Vue.use(VueMeta, {
+    refreshOnceOnNavigation: true
+});
 Vue.config.productionTip = true;
 
 

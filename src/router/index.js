@@ -10,17 +10,14 @@ export function createRouter () {
             {
                 path: '/',
                 component: () => import('@/views/Home.vue'),
-                meta: {title: 'home'}
             },
             {
                 path: '/girls',
                 component: () => import('@/views/About.vue'),
-                meta: {title: 'girls'}
             },
             {
                 path: '*',
                 component: () => import('@/views/404.vue'),
-                meta: {title: '404'}
             }
         ]
     })

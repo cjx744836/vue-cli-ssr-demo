@@ -33,6 +33,14 @@ if(mode === 'client') {
             plugins: [
                 new VueSSRClientPlugin()
             ]
+        },
+        chainWebpack: config => {
+            config
+                .plugin('html')
+                .tap(args => {
+                    args[0].filename = 'index-bak.html';
+                    return args;
+                })
         }
     });
 } else if(mode === 'server') {
