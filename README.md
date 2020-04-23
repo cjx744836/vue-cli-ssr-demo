@@ -1,24 +1,7 @@
-# vue-ssr-demo
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+基于vuecli改造的vue-ssr-demo
+开发环境支持热更新
+有数据预取
+有页面缓存
+加入了vue-meta可以更改head信息
+开发环境：npm run dev
+正式环境：npm run build
