@@ -21,7 +21,11 @@ export default context => {
                 context.state = store.state;
                 context.meta = meta;
                 resolve(app);
-            }).catch(reject);
+            }).catch(() => { //如果预取数据失败，还是正常执行防止页面渲染不出来
+                context.state = store.state;
+                context.meta = meta;
+                resolve(app);
+            });
         }, reject)
     })
 }
