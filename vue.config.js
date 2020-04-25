@@ -8,6 +8,7 @@ const NODE = mode === 'server';
 const axios = require('axios');
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.indexOf("dev") > -1;
 const {createBundleRenderer} = require('vue-server-renderer');
+const removeHTML = require('./plugins/removeHtml');
 function getArg(k) {
     var reg = new RegExp('--env\.' + k + '=(.*)');
     for(let it of process.argv) {
@@ -31,16 +32,9 @@ if(mode === 'client') {
         configureWebpack: {
             entry: './src/entry-client.js',
             plugins: [
-                new VueSSRClientPlugin()
+                new VueSSRClientPlugin(),
+                new removeHTML({name: 'index'})//访问网页根目录时会默认走index.html，所以删除它，直接走预置模板
             ]
-        },
-        chainWebpack: config => {
-            config
-                .plugin('html')
-                .tap(args => {
-                    args[0].filename = 'index-bak.html';
-                    return args;
-                })
         }
     });
 } else if(mode === 'server') {
