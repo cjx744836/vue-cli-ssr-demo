@@ -10,13 +10,16 @@ const fs = require('fs');
 const path = require('path');
 const opn = require('opn');
 const port = 9588;
+const pPort = require('../publicPort');
+const purl = `http://127.0.0.1:${pPort}/`;
+console.log(purl);
 
 
 webpackConfig.entry = path.join(__dirname, '../src/entry-server.js');
 webpackConfig.target = 'node';
 webpackConfig.output.libraryTarget = 'commonjs2';
 webpackConfig.optimization.splitChunks = {};
-webpackConfig.output.publicPath = 'http://127.0.0.1:8080/';
+webpackConfig.output.publicPath = purl;
 webpackConfig.plugins.push(new VueSSRServerPlugin());
 
 const complier = webpack(webpackConfig);
@@ -41,6 +44,7 @@ complier.watch({}, (err, states) => {
 
 function setUpServer() {
     isRunning = true;
+    server.set('x-powered-by', false);
     server.get('*', function(req, res) {
         renderHtml(req, res);
     });
@@ -56,7 +60,7 @@ function helper(v) {
 
 
 async function renderHtml(req, res,) {
-    let data = await axios.get('http://localhost:8080/vue-ssr-client-manifest.json');
+    let data = await axios.get(purl + 'vue-ssr-client-manifest.json');
     let clientManifest = data.data;
     let renderer = createBundleRenderer(bundle, {
         runInNewContext: false,
@@ -66,7 +70,10 @@ async function renderHtml(req, res,) {
         url: req.url,
     };
     renderer.renderToString(context, function(err, html) {
-        if(err) return res.end(err.stack);
+        if(err) {
+            if(err.code && err.code === 500) return res.status(502).end();
+            return res.status(404).end();
+        }
         const {title, htmlAttrs, bodyAttrs, link, style, script, noscript, meta} = context.meta.inject();
         let temp = `
           <!doctype html>
@@ -74,11 +81,10 @@ async function renderHtml(req, res,) {
             <head>
                 <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,minimum-scale=1">
                 ${helper(meta.text)}
                 ${helper(title.text)}  
-                ${context.renderStyles()}
-                ${context.renderResourceHints()}
+                ${context.renderStyles()}             
                 ${helper(link.text)}
                 ${helper(style.text)}
                 ${helper(script.text)}

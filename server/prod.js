@@ -12,6 +12,11 @@ const renderer = createBundleRenderer(serverBundle, {
 });
 const port = 9527;
 
+prod.set('x-powered-by', false);
+prod.use((req, res, next) => {
+    if(/vue-ssr-client-manifest\.json|vue-ssr-server-bundle\.json/.test(req.url)) return res.status(404).end();
+    next();
+});
 prod.use(express.static(path.join(__dirname, '../dist')));
 prod.get('*', function(req, res) {
     renderHTML(req, res);
@@ -44,19 +49,23 @@ function renderHTML(req, res) {
         }
     }
     renderer.renderToString(context, (err, html) => {
-        if(err) return res.end(err.stack);
+        if(err) {
+            console.log(err);
+            if(err.code && err.code === 500) return res.status(502).end();
+            return res.status(404).end();
+        }
         const {title, htmlAttrs, bodyAttrs, link, style, script, noscript, meta} = context.meta.inject();
+        //${context.renderResourceHints()} preload prefetch and so so
         let temp = `
           <!doctype html>
             <html ${helper(htmlAttrs.text)}>
             <head>
                 <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,minimum-scale=1">
                 ${helper(meta.text)}
-                ${helper(title.text)}  
+                ${helper(title.text)}
                 ${context.renderStyles()}
-                ${context.renderResourceHints()}
                 ${helper(link.text)}
                 ${helper(style.text)}
                 ${helper(script.text)}

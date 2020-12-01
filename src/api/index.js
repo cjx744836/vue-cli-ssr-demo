@@ -1,8 +1,8 @@
-import {request} from "../utils";
+import request from "../utils";
 
 export function getList(param) {
     return request({
-        url: 'https://www.easy-mock.com/mock/5c36b5d2be0a1c39bfd57589/img/beauty/page=1',
+        url: 'http://192.168.110.17:8919/getList',
         data: param,
         method: 'get'
     })

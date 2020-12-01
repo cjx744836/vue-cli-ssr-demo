@@ -1,6 +1,7 @@
 const nodeExternals = require("webpack-node-externals");
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
 const mode = getArg('mode');
@@ -9,6 +10,7 @@ const axios = require('axios');
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.indexOf("dev") > -1;
 const {createBundleRenderer} = require('vue-server-renderer');
 const removeHTML = require('./plugins/removeHtml');
+const port = require('./publicPort')
 function getArg(k) {
     var reg = new RegExp('--env\.' + k + '=(.*)');
     for(let it of process.argv) {
@@ -18,13 +20,14 @@ function getArg(k) {
     return '';
 }
 var config = {
-    publicPath: isDev ? 'http://127.0.0.1:8080' : './',
+    publicPath: isDev ? `http://127.0.0.1:${port}` : './',
     css: {
         sourceMap: !isDev && !NODE // if enable sourceMap:  fix ssr load Critical CSS throw replace of undefind
     }
 };
 isDev && (config.devServer = {
     headers: {'Access-Control-Allow-Origin': '*'},
+    port,
     disableHostCheck: true // fix ssr console error
 });
 if(mode === 'client') {
@@ -32,8 +35,9 @@ if(mode === 'client') {
         configureWebpack: {
             entry: './src/entry-client.js',
             plugins: [
+                new CopyWebpackPlugin([{from: './src/public/'}]),
                 new VueSSRClientPlugin(),
-                new removeHTML({name: 'index'})//访问网页根目录时会默认走index.html，所以删除它，直接走预置模板
+                new removeHTML({name: 'index'}),//访问网页根目录时会默认走index.html，所以删除它，直接走预置模板
             ]
         }
     });
@@ -75,6 +79,8 @@ if(mode === 'client') {
             }
             // fix ssr hot update bug
             config.plugins.delete("hmr");
+            config.plugins.delete('preload');
+            config.plugins.delete('prefetch');
         }
     });
 }

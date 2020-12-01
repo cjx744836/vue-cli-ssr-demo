@@ -12,7 +12,7 @@ export function createStore () {
         actions: {
             getList ({ commit }, id) {
                 return getList(id).then(item => {
-                    commit('setItem', item.data)
+                    commit('setItem', item.list)
                 });
             }
         },

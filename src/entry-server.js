@@ -8,7 +8,7 @@ export default context => {
         router.onReady(() => {
             const matchedComponents = router.getMatchedComponents();
             if (!matchedComponents.length) {
-                return reject({ code: 404 });
+                return reject({code: 404});
             }
             Promise.all(matchedComponents.map(Component => {
                 if (Component.asyncData) {
@@ -21,10 +21,8 @@ export default context => {
                 context.state = store.state;
                 context.meta = meta;
                 resolve(app);
-            }).catch(() => { //如果预取数据失败，还是正常执行防止页面渲染不出来
-                context.state = store.state;
-                context.meta = meta;
-                resolve(app);
+            }).catch(() => {
+                reject({code: 500});
             });
         }, reject)
     })

@@ -1,22 +1,36 @@
 import axios from 'axios';
 
-axios.interceptors.request.use(function (config) {
+
+let instance = axios.create({
+    timeout: 0,
+});
+
+instance.interceptors.request.use(config => {
+    if(config.method === 'get') {
+        config.params = config.data;
+    } else {
+        config.transformRequest = [function(v) {
+            let ret = [];
+            v = v || {};
+            Object.keys(v).forEach(k => {
+                ret.push(k + '=' + v[k]);
+            });
+            return ret.join('&');
+        }];
+    }
     return config;
-}, function (error) {
-    return Promise.reject(error);
+}, err => {
+    return Promise.reject(err);
 });
 
-axios.interceptors.response.use(function (response) {
-    return response.data;
-}, function (error) {
-    return Promise.reject(error);
+instance.interceptors.response.use(response => {
+    let data = response.data;
+    if(typeof data === 'object' && data.code === 0) {
+        return data;
+    }
+    return Promise.reject(data);
+}, err => {
+    return Promise.reject(err);
 });
 
-export function request(ops) {
-    return axios({
-        url: ops.url,
-        data: ops.data,
-        method: ops.method || 'get',
-        timeout: 15000
-    });
-}
+export default instance;

@@ -1,11 +1,11 @@
 <template>
   <div class="about">
     <h1>This is beautiful girls</h1>
-      <div v-if="loading">{{msg}}</div>
-      <div v-else>
+      <button @click="test">test</button>
+      <div>
           <ul>
               <li v-for="(item,i) in list" :key="i">
-                  <img :src="item.url">
+                  {{item.name}} - {{item.age}}
               </li>
           </ul>
       </div>
@@ -19,6 +19,7 @@
      export default {
          metaInfo: {
              title: 'girls',
+             htmlAttrs: {lang: 'zh'},
              meta: [
                  {name: 'referrer', content: 'never'},
                  {name: 'keywords', content: "girls"},
@@ -32,17 +33,23 @@
              };
          },
          asyncData({store}) {
-             return store.dispatch('getList', {pageSize: 20, pageNum: 1, resType: '01'});
+             return store.dispatch('getList');
          },
          components: {
              'hello-world': HelloWorld
          },
          mounted() {
+             if(!this.dataPromise) return;
              this.dataPromise.then(() => {
                  this.loading = false;
              }).catch(() => {
                  this.msg = 'Get Data Error';
              });
+         },
+         methods: {
+             test() {
+                 alert(1);
+             }
          },
          computed: {
              list() {
