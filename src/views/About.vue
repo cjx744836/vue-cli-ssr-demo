@@ -39,12 +39,7 @@
              'hello-world': HelloWorld
          },
          mounted() {
-             if(!this.dataPromise) return;
-             this.dataPromise.then(() => {
-                 this.loading = false;
-             }).catch(() => {
-                 this.msg = 'Get Data Error';
-             });
+             this.$options.asyncData({store: this.$store, route: this.$route});
          },
          methods: {
              test() {

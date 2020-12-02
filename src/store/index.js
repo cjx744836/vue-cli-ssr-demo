@@ -18,7 +18,7 @@ export function createStore () {
         },
         mutations: {
             setItem (state, v) {
-                Vue.set(state.items, 'list', v);
+                state.items.list = v;
             }
         }
     });

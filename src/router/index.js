@@ -9,11 +9,21 @@ export function createRouter () {
         routes: [
             {
                 path: '/',
-                component: () => import('@/views/Home.vue'),
+                component: () => import('@/views/layout.vue'),
+                children: [
+                    {
+                        path: 'home',
+                        component: () => import('@/views/Home.vue'),
+                    },
+                    {
+                        path: 'girls',
+                        component: () => import('@/views/About.vue'),
+                    }
+                ]
             },
             {
-                path: '/girls',
-                component: () => import('@/views/About.vue'),
+                path: '/404',
+                component: () => import('@/views/404.vue')
             }
         ]
     })

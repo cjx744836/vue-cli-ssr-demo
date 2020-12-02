@@ -12,6 +12,10 @@ const renderer = createBundleRenderer(serverBundle, {
 });
 const port = 9527;
 
+process.on('uncaughtException', err => {
+    console.log(err);
+});
+
 prod.set('x-powered-by', false);
 prod.use((req, res, next) => {
     if(/vue-ssr-client-manifest\.json|vue-ssr-server-bundle\.json/.test(req.url)) return res.status(404).end();
@@ -51,8 +55,7 @@ function renderHTML(req, res) {
     renderer.renderToString(context, (err, html) => {
         if(err) {
             console.log(err);
-            if(err.code && err.code === 500) return res.status(502).end();
-            return res.status(404).end();
+            return res.status(502).end();
         }
         const {title, htmlAttrs, bodyAttrs, link, style, script, noscript, meta} = context.meta.inject();
         //${context.renderResourceHints()} preload prefetch and so so

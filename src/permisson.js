@@ -1,9 +1,12 @@
-import router from '@/router/index.js';
 
-router.beforeEach((to, from, next) => {
-    next();
-});
+export default function routerEach(router) {
 
-router.afterEach((to, from) => {
+    router.beforeEach((to, from, next) => {
+        if(to.matched.length === 0) return next('/404');
+        next();
+    });
 
-});
+    router.afterEach(() => {
+
+    });
+}

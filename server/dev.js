@@ -42,6 +42,10 @@ complier.watch({}, (err, states) => {
     }
 });
 
+process.on('uncaughtException', err => {
+   console.log(err);
+});
+
 function setUpServer() {
     isRunning = true;
     server.set('x-powered-by', false);
@@ -71,8 +75,7 @@ async function renderHtml(req, res,) {
     };
     renderer.renderToString(context, function(err, html) {
         if(err) {
-            if(err.code && err.code === 500) return res.status(502).end();
-            return res.status(404).end();
+            return res.status(502).end();
         }
         const {title, htmlAttrs, bodyAttrs, link, style, script, noscript, meta} = context.meta.inject();
         let temp = `
