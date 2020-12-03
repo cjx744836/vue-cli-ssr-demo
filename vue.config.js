@@ -32,7 +32,9 @@ isDev && (config.devServer = {
 });
 if(mode === 'client') {
     config = Object.assign({}, config, {
+        productionSourceMap: isDev,
         configureWebpack: {
+            devtool: isDev ? 'source-map' : undefined,
             entry: './src/entry-client.js',
             plugins: [
                 new CopyWebpackPlugin([{from: './src/public/'}]),
