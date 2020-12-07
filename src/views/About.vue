@@ -2,7 +2,8 @@
   <div class="about">
     <h1>This is beautiful girls</h1>
       <button @click="test">test</button>
-      <div>
+      <div v-if="list.length === 0">Loading...</div>
+      <div v-else>
           <ul>
               <li v-for="(item,i) in list" :key="i">
                   {{item.name}} - {{item.age}}
@@ -39,7 +40,7 @@
              'hello-world': HelloWorld
          },
          mounted() {
-             this.$options.asyncData({store: this.$store, route: this.$route});
+             !this.$store.state.items.list.length && this.$options.asyncData({store: this.$store, route: this.$route}).then(() => this.loading = false);
          },
          methods: {
              test() {
